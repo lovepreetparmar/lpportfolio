@@ -21,12 +21,32 @@ export function SmoothScroll({ children }: SmoothScrollProps) {
     }
 
     const lenis = new Lenis({
-      duration: 1.1,
+      duration: 1.05,
       smoothWheel: true,
-      touchMultiplier: 1.2,
+      touchMultiplier: 1.15,
+      wheelMultiplier: 0.95,
     })
 
     lenis.on('scroll', ScrollTrigger.update)
+
+    ScrollTrigger.scrollerProxy(document.documentElement, {
+      scrollTop(value) {
+        if (arguments.length && value !== undefined) {
+          lenis.scrollTo(value, { immediate: true })
+        }
+        return lenis.scroll
+      },
+      getBoundingClientRect() {
+        return {
+          top: 0,
+          left: 0,
+          width: window.innerWidth,
+          height: window.innerHeight,
+        }
+      },
+    })
+
+    ScrollTrigger.defaults({ scroller: document.documentElement })
 
     const tick = (time: number) => {
       lenis.raf(time * 1000)
@@ -34,9 +54,13 @@ export function SmoothScroll({ children }: SmoothScrollProps) {
     gsap.ticker.add(tick)
     gsap.ticker.lagSmoothing(0)
 
+    requestAnimationFrame(() => ScrollTrigger.refresh())
+
     return () => {
       gsap.ticker.remove(tick)
       lenis.destroy()
+      ScrollTrigger.scrollerProxy(document.documentElement, {})
+      ScrollTrigger.defaults({ scroller: window })
     }
   }, [reducedMotion])
 

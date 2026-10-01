@@ -4,6 +4,7 @@ import { MeshDistortMaterial } from '@react-three/drei'
 import type { Group } from 'three'
 import { lerp } from '@/lib/utils'
 import { pointerStore } from '@/experience/pointerStore'
+import { heroScrollStore } from '@/experience/heroScrollStore'
 import { useReducedMotion } from '@/hooks/useReducedMotion'
 
 const velocity = { x: 0, y: 0 }
@@ -22,11 +23,17 @@ export function HeroObject() {
     const px = reducedMotion ? 0 : pointerStore.x
     const py = reducedMotion ? 0 : pointerStore.y
 
-    root.current.rotation.x = lerp(root.current.rotation.x, py * 0.35 + velocity.y * 0.4, 0.06)
-    root.current.rotation.y = lerp(root.current.rotation.y, px * 0.45 + velocity.x * 0.5, 0.06)
-    root.current.position.y = lerp(root.current.position.y, py * 0.08, 0.08)
+    const scroll = heroScrollStore.exit
+    const scrollDamp = 1 - scroll * 0.55
 
-    inner.current.rotation.z += delta * (reducedMotion ? 0.02 : 0.08)
+    root.current.rotation.x = lerp(root.current.rotation.x, (py * 0.35 + velocity.y * 0.4) * scrollDamp, 0.06)
+    root.current.rotation.y = lerp(root.current.rotation.y, (px * 0.45 + velocity.x * 0.5) * scrollDamp, 0.06)
+    root.current.position.y = lerp(root.current.position.y, py * 0.08 - scroll * 0.35, 0.08)
+    root.current.position.z = lerp(root.current.position.z, -scroll * 0.9, 0.08)
+    const scale = lerp(root.current.scale.x, 1 - scroll * 0.22, 0.08)
+    root.current.scale.setScalar(scale)
+
+    inner.current.rotation.z += delta * (reducedMotion ? 0.02 : 0.08) * scrollDamp
     inner.current.rotation.x += delta * 0.04
   })
 

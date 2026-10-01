@@ -1,25 +1,34 @@
+import { useRef } from 'react'
 import { AnimatedCharacter } from '@/components/AnimatedCharacter/AnimatedCharacter'
 import { MagneticButton } from '@/components/Magnetic/MagneticButton'
 import { EMAIL, socialLinks } from '@/data/social'
+import { useGsapReveal } from '@/hooks/useGsapReveal'
 
 export function Contact() {
+  const sectionRef = useRef<HTMLElement>(null)
+  useGsapReveal(sectionRef, { selector: '[data-reveal]', stagger: 0.08, y: 40 })
+
   return (
     <section
       id="contact"
+      ref={sectionRef}
       className="section-gap page-padding border-t border-ink/10 bg-gradient-to-b from-cream to-white/50 py-24 md:py-32"
       aria-label="Contact"
     >
       <div className="grid items-center gap-12 lg:grid-cols-12">
         <div className="lg:col-span-7">
-          <h2 className="font-[family-name:var(--font-display)] text-4xl font-semibold leading-tight text-ink md:text-6xl">
+          <h2
+            className="font-[family-name:var(--font-display)] text-4xl font-semibold leading-tight text-ink md:text-6xl"
+            data-section-title
+          >
             Have an idea?
             <br />
             <span className="text-accent">Let&apos;s build it.</span>
           </h2>
-          <p className="mt-6 max-w-md text-lg text-ink/70">
+          <p className="mt-6 max-w-md text-lg text-ink/70" data-reveal>
             Reach out for collaborations, product builds, or a friendly hello.
           </p>
-          <div className="mt-10">
+          <div className="mt-10" data-reveal>
             <MagneticButton
               href={`mailto:${EMAIL}`}
               className="inline-flex items-center gap-2 rounded-full bg-ink px-8 py-4 text-sm font-medium text-cream"
@@ -29,7 +38,7 @@ export function Contact() {
             </MagneticButton>
           </div>
           <p className="mt-4 label-mono text-ink/50">{EMAIL}</p>
-          <ul className="mt-10 flex flex-wrap gap-6">
+          <ul className="mt-10 flex flex-wrap gap-6" data-reveal>
             {socialLinks.map((link) => (
               <li key={link.id}>
                 <a
@@ -45,7 +54,7 @@ export function Contact() {
             ))}
           </ul>
         </div>
-        <div className="flex justify-center lg:col-span-5 lg:justify-end">
+        <div className="flex justify-center lg:col-span-5 lg:justify-end" data-reveal>
           <AnimatedCharacter state="happy" followCursor expression="happy" />
         </div>
       </div>

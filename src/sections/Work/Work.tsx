@@ -1,46 +1,16 @@
-import { useEffect, useRef } from 'react'
+import { useRef } from 'react'
 import { Link } from 'react-router-dom'
-import gsap from 'gsap'
-import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import { projects } from '@/data/projects'
 import { ProjectVisual } from '@/components/ProjectVisual/ProjectVisual'
 import { useCharacterExpression } from '@/contexts/CharacterExpressionContext'
-import { useReducedMotion } from '@/hooks/useReducedMotion'
-
-gsap.registerPlugin(ScrollTrigger)
+import { useGsapReveal } from '@/hooks/useGsapReveal'
 
 export function Work() {
   const sectionRef = useRef<HTMLElement>(null)
   const { setExpression, resetExpression } = useCharacterExpression()
-  const reducedMotion = useReducedMotion()
   const featured = projects.filter((p) => p.featured)
 
-  useEffect(() => {
-    const section = sectionRef.current
-    if (!section || reducedMotion) return
-
-    const ctx = gsap.context(() => {
-      gsap.utils.toArray<HTMLElement>('[data-work-item]').forEach((el) => {
-        gsap.fromTo(
-          el,
-          { y: 48, opacity: 0 },
-          {
-            y: 0,
-            opacity: 1,
-            duration: 0.9,
-            ease: 'power3.out',
-            scrollTrigger: {
-              trigger: el,
-              start: 'top 85%',
-              toggleActions: 'play none none reverse',
-            },
-          },
-        )
-      })
-    }, section)
-
-    return () => ctx.revert()
-  }, [reducedMotion])
+  useGsapReveal(sectionRef, { selector: '[data-work-item]', start: 'top 88%', y: 56, stagger: 0.12 })
 
   return (
     <section
@@ -50,11 +20,14 @@ export function Work() {
       aria-label="Work"
     >
       <header className="mb-20 max-w-2xl">
-        <p className="label-mono text-ink/50">Work</p>
-        <h2 className="mt-4 font-[family-name:var(--font-display)] text-4xl font-semibold tracking-tight text-ink md:text-6xl">
+        <p className="label-mono text-ink/50" data-section-label>Work</p>
+        <h2
+          className="mt-4 font-[family-name:var(--font-display)] text-4xl font-semibold tracking-tight text-ink md:text-6xl"
+          data-section-title
+        >
           Selected projects
         </h2>
-        <p className="mt-6 text-lg text-ink/70">
+        <p className="mt-6 text-lg text-ink/70" data-reveal>
           Product stories across mobile, web, and AI — hover to peek; open for case notes.
         </p>
       </header>

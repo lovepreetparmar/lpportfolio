@@ -1,7 +1,11 @@
-import { useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { Link } from 'react-router-dom'
+import gsap from 'gsap'
+import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import { EMAIL } from '@/data/social'
 import { cn } from '@/lib/utils'
+import { ensureGsapPlugins } from '@/animations/utils'
+import { useReducedMotion } from '@/hooks/useReducedMotion'
 
 const links = [
   { label: 'Work', href: '#work', route: false },
@@ -12,10 +16,39 @@ const links = [
 
 export function SiteNavigation() {
   const [open, setOpen] = useState(false)
+  const headerRef = useRef<HTMLElement>(null)
+  const reducedMotion = useReducedMotion()
+
+  useEffect(() => {
+    const header = headerRef.current
+    if (!header || reducedMotion) return
+
+    ensureGsapPlugins()
+    const ctx = gsap.context(() => {
+      ScrollTrigger.create({
+        start: 0,
+        end: 'max',
+        onUpdate: (self) => {
+          const hidden = self.scroll() > 120 && self.direction === 1
+          gsap.to(header, {
+            y: hidden ? -96 : 0,
+            duration: 0.45,
+            ease: 'power3.out',
+            overwrite: true,
+          })
+        },
+      })
+    })
+
+    return () => ctx.revert()
+  }, [reducedMotion])
 
   return (
     <>
-      <header className="fixed inset-x-0 top-0 z-50 border-b border-ink/5 bg-cream/80 backdrop-blur-md">
+      <header
+        ref={headerRef}
+        className="fixed inset-x-0 top-0 z-50 border-b border-ink/5 bg-cream/80 backdrop-blur-md will-change-transform"
+      >
         <div className="page-padding flex items-center justify-between py-4">
           <Link
             to="/"
@@ -27,11 +60,20 @@ export function SiteNavigation() {
           <nav className="hidden items-center gap-8 md:flex" aria-label="Primary">
             {links.map((link) =>
               link.route ? (
-                <Link key={link.label} to={link.href} className="text-sm text-ink/70 transition-colors hover:text-ink focus-ring">
+                <Link
+                  key={link.label}
+                  to={link.href}
+                  className="text-sm text-ink/70 transition-colors hover:text-ink focus-ring"
+                  data-cursor="VIEW"
+                >
                   {link.label}
                 </Link>
               ) : (
-                <a key={link.label} href={link.href} className="text-sm text-ink/70 transition-colors hover:text-ink focus-ring">
+                <a
+                  key={link.label}
+                  href={link.href}
+                  className="text-sm text-ink/70 transition-colors hover:text-ink focus-ring"
+                >
                   {link.label}
                 </a>
               ),

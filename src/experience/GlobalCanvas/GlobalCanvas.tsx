@@ -32,7 +32,9 @@ export function GlobalCanvas() {
         <CursorLamp />
         <Suspense fallback={null}>
           <Environment preset="studio" environmentIntensity={0.85} />
-          <HeroObject />
+          <group position={[1.35, 0.05, 0]} scale={0.85}>
+            <HeroObject />
+          </group>
         </Suspense>
       </Canvas>
     </div>

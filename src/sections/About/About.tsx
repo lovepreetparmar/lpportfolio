@@ -1,20 +1,33 @@
+import { useRef } from 'react'
 import { AnimatedCharacter } from '@/components/AnimatedCharacter/AnimatedCharacter'
+import { useGsapReveal } from '@/hooks/useGsapReveal'
 
 export function About() {
+  const sectionRef = useRef<HTMLElement>(null)
+  useGsapReveal(sectionRef, { selector: '[data-reveal]', stagger: 0.1, y: 36 })
+
   return (
-    <section id="about" className="section-gap page-padding border-t border-ink/10 py-24 md:py-32" aria-label="About">
+    <section
+      id="about"
+      ref={sectionRef}
+      className="section-gap page-padding border-t border-ink/10 py-24 md:py-32"
+      aria-label="About"
+    >
       <div className="grid items-center gap-16 lg:grid-cols-12">
-        <div className="lg:col-span-5">
+        <div className="lg:col-span-5" data-reveal>
           <div className="flex justify-center lg:justify-start">
             <AnimatedCharacter state="working" followCursor={false} expression="happy" />
           </div>
         </div>
         <div className="lg:col-span-7">
-          <p className="label-mono text-ink/50">About</p>
-          <h2 className="mt-4 font-[family-name:var(--font-display)] text-4xl font-semibold text-ink md:text-5xl">
+          <p className="label-mono text-ink/50" data-section-label>About</p>
+          <h2
+            className="mt-4 font-[family-name:var(--font-display)] text-4xl font-semibold text-ink md:text-5xl"
+            data-section-title
+          >
             A little about the person behind the code.
           </h2>
-          <div className="mt-8 space-y-6 text-lg text-ink/75">
+          <div className="mt-8 space-y-6 text-lg text-ink/75" data-reveal>
             <p>
               I&apos;m Lovepreet Parmar — an illustrator and developer familiar with programming and design tools. I
               build modern digital products across web, mobile, AI, and interactive experiences.
@@ -24,7 +37,7 @@ export function About() {
               Engineering College (B.Tech, 2015–2019) and have kept designing and shipping software since.
             </p>
           </div>
-          <dl className="mt-12 grid gap-6 sm:grid-cols-2">
+          <dl className="mt-12 grid gap-6 sm:grid-cols-2" data-reveal>
             <div>
               <dt className="label-mono text-ink/45">Role</dt>
               <dd className="mt-1 font-medium text-ink">Software developer</dd>

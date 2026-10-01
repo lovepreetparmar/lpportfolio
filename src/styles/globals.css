@@ -91,3 +91,12 @@ button {
     transform: translateY(-4px);
   }
 }
+
+@media (prefers-reduced-motion: reduce) {
+  @keyframes character-breathe {
+    0%,
+    100% {
+      transform: none;
+    }
+  }
+}

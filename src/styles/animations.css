@@ -11,3 +11,15 @@
 .scroll-hint {
   animation: pulse-soft 2.4s ease-in-out infinite;
 }
+
+@media (prefers-reduced-motion: reduce) {
+  .scroll-hint {
+    animation: none;
+  }
+
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto !important;
+  }
+}
