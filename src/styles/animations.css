@@ -1,0 +1,13 @@
+@keyframes pulse-soft {
+  0%,
+  100% {
+    opacity: 0.35;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+.scroll-hint {
+  animation: pulse-soft 2.4s ease-in-out infinite;
+}

@@ -1,0 +1,7 @@
+.experience-track {
+  pointer-events: none;
+}
+
+#experience-root {
+  color: var(--white);
+}
