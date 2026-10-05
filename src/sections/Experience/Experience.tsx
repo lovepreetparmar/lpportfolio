@@ -2,7 +2,11 @@ import { experience } from '@/data/experience'
 
 export function ExperienceSection() {
   return (
-    <section className="page-padding border-t border-ink/10 py-20" aria-label="Experience">
+    <section
+      id="experience"
+      className="page-padding border-t border-ink/10 py-20"
+      aria-label="Experience"
+    >
       <p className="label-mono text-ink/50">Experience</p>
       <h2 className="mt-4 font-[family-name:var(--font-display)] text-3xl font-semibold text-ink">
         Learning &amp; roles
@@ -19,9 +23,6 @@ export function ExperienceSection() {
           </li>
         ))}
       </ul>
-      <p className="mt-10 text-sm text-ink/50">
-        Post-2019 project work is documented under Work; add employers here when you want them published.
-      </p>
     </section>
   )
 }

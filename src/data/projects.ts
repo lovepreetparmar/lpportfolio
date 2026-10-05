@@ -46,7 +46,7 @@ export const projects: Project[] = [
     title: 'HR Browser',
     category: 'DESKTOP · ELECTRON',
     description:
-      'Desktop HR tooling built with Electron and React — case study details pending repository verification.',
+      'Desktop HR tooling built with Electron and React.',
     technologies: ['Electron', 'React', 'TypeScript', 'APIs'],
     visualType: 'desktop',
     featured: true,
@@ -57,7 +57,7 @@ export const projects: Project[] = [
     title: 'Rego Kernel',
     category: 'AI · WEB · BACKEND',
     description:
-      'AI-backed web platform with a FastAPI service layer — verify architecture and features before launch.',
+      'AI-backed web platform with a FastAPI service layer.',
     technologies: ['React', 'FastAPI', 'Python', 'SQLite', 'APIs'],
     visualType: 'custom',
     featured: true,

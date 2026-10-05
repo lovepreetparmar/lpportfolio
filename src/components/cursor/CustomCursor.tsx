@@ -28,14 +28,16 @@ export function CustomCursor() {
       ty = e.clientY
     }
 
+    let frame = 0
+
     const tick = () => {
       x += (tx - x) * 0.18
       y += (ty - y) * 0.18
       dot.style.transform = `translate3d(${x}px, ${y}px, 0) translate(-50%, -50%)`
       labelEl.style.transform = `translate3d(${x}px, ${y}px, 0) translate(-50%, -50%)`
-      requestAnimationFrame(tick)
+      frame = requestAnimationFrame(tick)
     }
-    requestAnimationFrame(tick)
+    frame = requestAnimationFrame(tick)
 
     const onOver = (e: MouseEvent) => {
       const target = e.target as HTMLElement
@@ -49,6 +51,7 @@ export function CustomCursor() {
     window.addEventListener('mouseover', onOver)
 
     return () => {
+      cancelAnimationFrame(frame)
       window.removeEventListener('mousemove', onMove)
       window.removeEventListener('mouseover', onOver)
     }

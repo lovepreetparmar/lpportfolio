@@ -13,8 +13,13 @@ export default function App() {
     <SmoothScroll>
       <Seo />
       <CustomCursor />
-      {!ready ? <MonogramLoader onComplete={() => setReady(true)} /> : null}
-      {ready ? <RouterProvider router={router} /> : null}
+      {/*
+        The router mounts immediately so #root always contains the real,
+        crawlable and assistive-technology-readable document. The loader is a
+        visual overlay only — it never gates rendering.
+      */}
+      <RouterProvider router={router} />
+      {ready ? null : <MonogramLoader onComplete={() => setReady(true)} />}
     </SmoothScroll>
   )
 }

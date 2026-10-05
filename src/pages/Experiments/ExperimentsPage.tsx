@@ -10,7 +10,7 @@ export function ExperimentsPage() {
       <main className="page-padding section-gap pt-28 pb-16">
         <h1 className="font-[family-name:var(--font-display)] text-5xl font-semibold">Experiments</h1>
         <p className="mt-6 max-w-xl text-lg text-ink/70">
-          Small playgrounds for motion, type, and interaction — more demos landing soon.
+          Small playgrounds for motion, type, and interaction.
         </p>
         <ul className="mt-12 space-y-6">
           {experiments.map((exp) => (

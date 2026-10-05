@@ -13,7 +13,7 @@ export function HomePage() {
     <CharacterExpressionProvider>
       <div className="bg-cream text-ink">
         <SiteNavigation />
-        <main>
+        <main id="home">
           <Hero />
           <Work />
           <About />

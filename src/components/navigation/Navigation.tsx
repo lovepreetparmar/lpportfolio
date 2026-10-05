@@ -49,6 +49,7 @@ export function SiteNavigation() {
             type="button"
             className="label-mono text-ink focus-ring md:hidden"
             aria-expanded={open}
+            aria-controls="mobile-menu"
             onClick={() => setOpen((v) => !v)}
           >
             Menu
@@ -57,11 +58,13 @@ export function SiteNavigation() {
       </header>
 
       <div
+        id="mobile-menu"
         className={cn(
           'fixed inset-0 z-40 bg-cream pt-24 transition-opacity md:hidden',
           open ? 'pointer-events-auto opacity-100' : 'pointer-events-none opacity-0',
         )}
         aria-hidden={!open}
+        inert={!open}
       >
         <nav className="flex flex-col gap-8 page-padding" aria-label="Mobile">
           {links.map((link) =>

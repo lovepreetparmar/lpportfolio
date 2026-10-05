@@ -10,7 +10,8 @@ type SeoProps = {
 export function Seo({ title, description, path = '' }: SeoProps) {
   const pageTitle = title ?? SITE_TITLE
   const pageDescription = description ?? SITE_DESCRIPTION
-  const canonical = `${SITE_URL}${path}`
+  // Match the trailing-slash form used by index.html for the site root.
+  const canonical = path ? `${SITE_URL}${path}` : `${SITE_URL}/`
 
   useEffect(() => {
     document.title = pageTitle
@@ -50,7 +51,7 @@ export function Seo({ title, description, path = '' }: SeoProps) {
       '@context': 'https://schema.org',
       '@type': 'Person',
       name: 'Lovepreet Parmar',
-      jobTitle: 'Full Stack Developer',
+      jobTitle: 'Software Developer',
       url: SITE_URL,
       sameAs: [
         'https://github.com/lovepreetparmar',

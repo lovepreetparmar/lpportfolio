@@ -26,7 +26,7 @@ export function ExperimentDetailPage() {
         <p className="label-mono text-ink/50">{experiment.category}</p>
         <h1 className="mt-4 font-[family-name:var(--font-display)] text-5xl font-semibold">{experiment.title}</h1>
         <p className="mt-8 max-w-2xl text-lg text-ink/75">{experiment.description}</p>
-        <p className="mt-12 label-mono text-ink/50">Interactive build — coming in a later phase.</p>
+        <p className="mt-12 label-mono text-ink/50">Interactive demo not available yet.</p>
         <Link to="/experiments" className="mt-16 inline-block label-mono focus-ring">← Experiments</Link>
       </main>
       <Footer />
