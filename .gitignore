@@ -22,3 +22,12 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# Playwright
+/test-results/
+/playwright-report/
+/playwright/.cache/
+/blob-report/
+# Debugging screenshots captured during runs, not committed fixtures.
+/tests/screenshots/*.png
+/tests/screenshots/**/*.png
