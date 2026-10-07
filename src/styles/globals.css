@@ -1,12 +1,16 @@
 @import 'tailwindcss';
 @import './typography.css';
 @import './animations.css';
+@import './character.css';
+@import './hero.css';
 
 @theme {
   --color-cream: #f6f1e8;
   --color-ink: #141210;
   --color-accent: #e85d4c;
   --color-accent-muted: #3d6b5a;
+  --color-sage: #3d6b5a;
+  --color-haze: #6d8fa6;
   --color-muted: #6b6560;
   --color-line: rgba(20, 18, 16, 0.12);
 }
@@ -15,6 +19,8 @@
   --cream: #f6f1e8;
   --ink: #141210;
   --accent: #e85d4c;
+  --sage: #3d6b5a;
+  --haze: #6d8fa6;
 
   --font-display: 'Space Grotesk', system-ui, sans-serif;
   --font-body: 'Inter', system-ui, sans-serif;
@@ -27,34 +33,41 @@
   box-sizing: border-box;
 }
 
-html {
-  background: var(--cream);
-  color: var(--ink);
-  font-family: var(--font-body);
-  text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
-}
+/*
+ * Element resets live in the base layer so component rules and Tailwind
+ * utilities (e.g. a pill button's `text-cream`) can override them. Unlayered
+ * rules would beat every layered rule regardless of specificity.
+ */
+@layer base {
+  html {
+    background: var(--cream);
+    color: var(--ink);
+    font-family: var(--font-body);
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+  }
 
-body {
-  margin: 0;
-  min-height: 100vh;
-}
+  body {
+    margin: 0;
+    min-height: 100vh;
+  }
 
-::selection {
-  background: rgba(232, 93, 76, 0.2);
-}
+  ::selection {
+    background: rgba(232, 93, 76, 0.2);
+  }
 
-a {
-  color: inherit;
-  text-decoration: none;
-}
+  a {
+    color: inherit;
+    text-decoration: none;
+  }
 
-button {
-  font: inherit;
-  color: inherit;
-  background: none;
-  border: none;
-  cursor: pointer;
+  button {
+    font: inherit;
+    color: inherit;
+    background: none;
+    border: none;
+    cursor: pointer;
+  }
 }
 
 .sr-only {

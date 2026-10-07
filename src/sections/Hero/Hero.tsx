@@ -1,87 +1,74 @@
-import { useEffect, useRef } from 'react'
-import gsap from 'gsap'
+import { useLayoutEffect, useRef, useState } from 'react'
 import { AnimatedCharacter } from '@/components/AnimatedCharacter/AnimatedCharacter'
-import { MagneticButton } from '@/components/Magnetic/MagneticButton'
-import { useReducedMotion } from '@/hooks/useReducedMotion'
 import { useCharacterExpression } from '@/contexts/CharacterExpressionContext'
+import { useCharacterPose } from '@/contexts/CharacterPoseContext'
+import { heroContent } from '@/data/hero'
+import { useReducedMotion } from '@/hooks/useReducedMotion'
+import { HeroEnvironment } from './HeroEnvironment'
+import { HeroTypography } from './HeroTypography'
+import { playHeroEntrance } from './heroEntrance'
 
+/**
+ * The hero as an illustrated scene rather than text beside a picture:
+ * editorial type on the left, and on the right a small world — a low sun, a
+ * distant hill, a horizon, a strip of ground — built so the character can
+ * stand in it, overlap the shapes and reach past them.
+ *
+ * Everything in `.hero-scene` hangs off the stage's bottom edge, which is
+ * also where the ground line sits, so the scenery and the horizon always
+ * agree. The scene is decorative and hidden from assistive tech; the figure
+ * is the subject.
+ *
+ * The character stays `resting` until the entrance settles, then switches to
+ * pointer-driven interaction — sequence step 4 of the entrance.
+ */
 export function Hero() {
   const { expression } = useCharacterExpression()
+  const { pose } = useCharacterPose()
   const rootRef = useRef<HTMLElement>(null)
   const reducedMotion = useReducedMotion()
+  const [settled, setSettled] = useState(false)
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     const root = rootRef.current
-    if (!root || reducedMotion) return
-
-    const ctx = gsap.context(() => {
-      gsap.fromTo(
-        '.hero-headline-line',
-        { y: 56, opacity: 0 },
-        { y: 0, opacity: 1, duration: 1, stagger: 0.12, ease: 'power3.out' },
-      )
-      gsap.fromTo(
-        '.hero-character-wrap',
-        { scale: 0.92, opacity: 0 },
-        { scale: 1, opacity: 1, duration: 1.1, ease: 'power3.out', delay: 0.15 },
-      )
-      gsap.fromTo(
-        '[data-hero-hint]',
-        { opacity: 0, y: 8 },
-        { opacity: 1, y: 0, duration: 0.45, stagger: 1.6, delay: 0.8 },
-      )
-    }, root)
-
-    return () => ctx.revert()
+    if (!root) return undefined
+    return playHeroEntrance(root, { reduced: reducedMotion, onSettled: () => setSettled(true) })
   }, [reducedMotion])
 
   return (
     <section
       id="hero"
       ref={rootRef}
-      className="relative min-h-[100svh] overflow-hidden bg-cream pt-28 pb-16"
+      className="hero hero--grain relative isolate min-h-[100svh] overflow-hidden bg-cream"
       aria-label="Introduction"
     >
-      <div className="page-padding grid min-h-[calc(100svh-7rem)] grid-cols-1 items-center gap-10 lg:grid-cols-12">
-        <div className="relative z-10 lg:col-span-7">
-          <p className="label-mono text-ink/60">Lovepreet Parmar</p>
-          <h1 className="mt-4 font-[family-name:var(--font-display)] text-ink">
-            <span className="hero-headline-line block text-[clamp(2.8rem,9vw,6.5rem)] leading-[0.95] tracking-[-0.03em]">
-              I build
-            </span>
-            <span className="hero-headline-line block text-[clamp(2.8rem,9vw,6.5rem)] leading-[0.95] tracking-[-0.03em]">
-              digital
-            </span>
-            <span className="hero-headline-line block text-[clamp(2.8rem,9vw,6.5rem)] leading-[0.95] tracking-[-0.03em] text-accent">
-              things.
-            </span>
-          </h1>
-          <p className="mt-8 max-w-md text-lg text-ink/75">
-            Software developer building web, mobile, and AI-powered experiences.
-          </p>
-          <p className="mt-2 label-mono text-ink/50">Web · Mobile · AI · Product</p>
-          <div className="mt-10">
-            <MagneticButton href="#work" className="inline-flex items-center gap-2 rounded-full border border-ink/20 bg-white px-6 py-3 text-sm font-medium text-ink shadow-sm">
-              Explore my work →
-            </MagneticButton>
-          </div>
-          <ul className="mt-16 flex flex-col gap-1">
-            {['MOVE', 'DRAG', 'SCROLL'].map((hint) => (
-              <li key={hint} data-hero-hint className="label-mono text-ink/40">
-                {hint}
-              </li>
-            ))}
-          </ul>
+      <HeroEnvironment />
+
+      <div className="page-padding relative z-10 grid min-h-[100svh] grid-cols-1 content-end gap-x-8 gap-y-8 pt-24 pb-12 md:grid-cols-12 md:items-end md:gap-y-0 md:pb-20">
+        <div className="relative z-10 md:col-span-7 md:pb-5">
+          <HeroTypography />
         </div>
 
-        <div className="hero-character-wrap relative z-[5] flex justify-center lg:col-span-5 lg:justify-end">
-          <AnimatedCharacter state="idle" followCursor expression={expression} />
+        <div className="hero-stage relative z-[5] md:col-span-5" data-hero-stage>
+          <div className="hero-scene" aria-hidden="true">
+            <span className="hero-scene__sun" data-parallax="0.05" />
+            <span className="hero-scene__hill" data-parallax="-0.02" />
+            <span className="hero-scene__ground" />
+            <span className="hero-scene__tuft" />
+            <span className="hero-scene__stone" />
+            <span className="hero-ground" data-hero-ground />
+          </div>
+
+          <AnimatedCharacter
+            expression={expression}
+            pose={pose}
+            interaction={settled ? 'auto' : 'resting'}
+            priority="high"
+            alt={heroContent.characterAlt}
+            className="hero-character"
+          />
         </div>
       </div>
-      <div
-        className="pointer-events-none absolute -right-20 top-32 h-64 w-64 rounded-full bg-accent/10 blur-3xl"
-        aria-hidden="true"
-      />
     </section>
   )
 }

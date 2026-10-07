@@ -7,22 +7,29 @@ import { Contact } from '@/sections/Contact/Contact'
 import { SiteNavigation } from '@/components/navigation/Navigation'
 import { Footer } from '@/components/common/Footer'
 import { CharacterExpressionProvider } from '@/contexts/CharacterExpressionContext'
+import { CharacterPoseProvider } from '@/contexts/CharacterPoseContext'
+import { ScrollPoseWatcher } from '@/components/AnimatedCharacter/ScrollPoseWatcher'
+import { PersistentCharacter } from '@/components/AnimatedCharacter/PersistentCharacter'
 
 export function HomePage() {
   return (
     <CharacterExpressionProvider>
-      <div className="bg-cream text-ink">
-        <SiteNavigation />
-        <main id="home">
-          <Hero />
-          <Work />
-          <About />
-          <ExperienceSection />
-          <Stack />
-          <Contact />
-          <Footer />
-        </main>
-      </div>
+      <CharacterPoseProvider>
+        <ScrollPoseWatcher />
+        <PersistentCharacter />
+        <div className="bg-cream text-ink">
+          <SiteNavigation />
+          <main id="home">
+            <Hero />
+            <Work />
+            <About />
+            <ExperienceSection />
+            <Stack />
+            <Contact />
+            <Footer />
+          </main>
+        </div>
+      </CharacterPoseProvider>
     </CharacterExpressionProvider>
   )
 }

@@ -1,61 +1,109 @@
-import { useEffect, useState } from 'react'
-import { CharacterCanvas } from '@/components/CharacterCanvas/CharacterCanvas'
-import { useIsMobile } from '@/hooks/useIsMobile'
-import { useMousePosition } from '@/hooks/useMousePosition'
+import { useMemo, useRef } from 'react'
 import { useReducedMotion } from '@/hooks/useReducedMotion'
 import { cn } from '@/lib/utils'
-import type { AnimatedCharacterProps, CharacterExpression } from './types'
+import { characterAssets, resolveCharacterLayers } from './characterAssets'
+import { CharacterFrame } from './CharacterFrame'
+import { useBlink } from './useBlink'
+import { useCharacterGaze } from './useCharacterGaze'
+import type {
+  AnimatedCharacterProps,
+  CharacterExpression,
+  CharacterPose,
+  CharacterState,
+} from './types'
 
+/** Folding table for the deprecated `state` prop. */
+const LEGACY_STATE: Record<CharacterState, { pose: CharacterPose; expression: CharacterExpression }> = {
+  idle: { pose: 'idle', expression: 'neutral' },
+  looking: { pose: 'idle', expression: 'curious' },
+  happy: { pose: 'idle', expression: 'happy' },
+  curious: { pose: 'idle', expression: 'curious' },
+  thinking: { pose: 'idle', expression: 'thinking' },
+  excited: { pose: 'idle', expression: 'excited' },
+  working: { pose: 'coding', expression: 'focused' },
+}
+
+function toLength(value: number | string | undefined): string {
+  if (value === undefined) return '0px'
+  return typeof value === 'number' ? `${value}px` : value
+}
+
+/**
+ * The reusable illustrated character.
+ *
+ * Renders whatever frames are registered in `characterAssets` (a neutral
+ * placeholder until real artwork lands) and keeps them alive with pointer
+ * gaze, attention, breathing and irregular blinks. Motion is a self-parking
+ * rAF loop that only ever writes CSS custom properties, so pointer input never
+ * re-renders React, and everything goes still under `prefers-reduced-motion`.
+ *
+ * The component is layout-agnostic: size and placement come from `className`,
+ * so the same system can be reused by every section.
+ */
 export function AnimatedCharacter({
-  state = 'idle',
-  followCursor = true,
-  expression = 'neutral',
+  expression,
+  pose,
+  gaze = 'auto',
+  interaction,
+  motion = 'auto',
+  followCursor,
+  scale = 1,
+  offset,
+  priority = 'auto',
+  state,
+  alt = 'Illustrated character of Lovepreet Parmar',
   className,
 }: AnimatedCharacterProps) {
-  const isMobile = useIsMobile()
-  const reducedMotion = useReducedMotion()
-  const mouse = useMousePosition(followCursor && !isMobile && !reducedMotion)
-  const [blink, setBlink] = useState(false)
-  const [activeExpression, setActiveExpression] = useState<CharacterExpression>(expression)
+  const rootRef = useRef<HTMLDivElement>(null)
+  const prefersReducedMotion = useReducedMotion()
 
-  useEffect(() => {
-    setActiveExpression(expression)
-  }, [expression])
+  const legacy = state ? LEGACY_STATE[state] : null
+  const resolvedExpression: CharacterExpression = expression ?? legacy?.expression ?? 'neutral'
+  const resolvedPose: CharacterPose = pose ?? legacy?.pose ?? 'idle'
+  const resolvedInteraction = interaction ?? (followCursor === false ? 'resting' : 'auto')
+  const motionEnabled = motion === 'auto' ? !prefersReducedMotion : motion === 'on'
+  // Blinking only re-renders the figure once a blink frame actually exists.
+  const blink = useBlink({ enabled: motionEnabled && Boolean(characterAssets.blink) })
 
-  useEffect(() => {
-    if (reducedMotion) return
-    let timeout = 0
-    const schedule = () => {
-      const delay = 2500 + Math.random() * 4000
-      timeout = window.setTimeout(() => {
-        setBlink(true)
-        window.setTimeout(() => {
-          setBlink(false)
-          schedule()
-        }, 120)
-      }, delay)
-    }
-    schedule()
-    return () => window.clearTimeout(timeout)
-  }, [reducedMotion])
+  useCharacterGaze(rootRef, {
+    mode: resolvedInteraction,
+    motion: motionEnabled,
+    gaze,
+  })
 
-  const lookX = followCursor && !isMobile ? mouse.nx : 0
-  const lookY = followCursor && !isMobile ? mouse.ny : 0
+  const layers = useMemo(
+    () =>
+      resolveCharacterLayers({
+        pose: resolvedPose,
+        expression: resolvedExpression,
+        gaze: gaze === 'auto' ? 'neutral' : gaze,
+        interaction: resolvedInteraction,
+        blink,
+      }),
+    [resolvedPose, resolvedExpression, gaze, resolvedInteraction, blink],
+  )
 
   return (
     <div
-      className={cn(
-        'character-root relative aspect-square w-[min(72vw,22rem)] md:w-[min(40vw,28rem)]',
-        state === 'idle' && !reducedMotion && 'animate-[character-breathe_4s_ease-in-out_infinite]',
-        className,
-      )}
+      ref={rootRef}
+      className={cn('character-root', className)}
+      style={{ transform: `translate(${toLength(offset?.x)}, ${toLength(offset?.y)}) scale(${scale})` }}
+      role="img"
+      aria-label={alt}
+      data-character-state={`${resolvedPose}/${resolvedExpression}`}
+      data-character-pose={resolvedPose}
     >
-      <CharacterCanvas
-        lookX={lookX}
-        lookY={lookY}
-        expression={activeExpression}
-        blink={blink}
-      />
+      <div className={cn(resolvedPose === 'idle' && motionEnabled && 'character-breathe')}>
+        <div className="character-figure">
+          <CharacterFrame
+            layers={layers}
+            expression={resolvedExpression}
+            pose={resolvedPose}
+            priority={priority}
+          />
+          <span className="character-shadow" aria-hidden="true" />
+        </div>
+      </div>
     </div>
   )
 }
