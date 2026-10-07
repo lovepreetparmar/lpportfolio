@@ -1,7 +1,10 @@
 import { MagneticButton } from '@/components/Magnetic/MagneticButton'
 import { EMAIL, socialLinks } from '@/data/social'
+import { useCharacterExpression } from '@/contexts/CharacterExpressionContext'
 
 export function Contact() {
+  const { setExpression, resetExpression } = useCharacterExpression()
+
   return (
     <section
       id="contact"
@@ -18,7 +21,11 @@ export function Contact() {
           <p className="mt-6 max-w-md text-lg text-ink/70">
             Reach out for collaborations, product builds, or a friendly hello.
           </p>
-          <div className="mt-10">
+          <div
+            className="mt-10 inline-block"
+            onPointerEnter={() => setExpression('happy')}
+            onPointerLeave={resetExpression}
+          >
             <MagneticButton
               href={`mailto:${EMAIL}`}
               className="inline-flex items-center gap-2 rounded-full bg-ink px-8 py-4 text-sm font-medium text-cream"

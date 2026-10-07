@@ -1,3 +1,6 @@
+import { useEffect } from 'react'
+import { useLocation } from 'react-router-dom'
+import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import { Hero } from '@/sections/Hero/Hero'
 import { Work } from '@/sections/Work/Work'
 import { About } from '@/sections/About/About'
@@ -12,6 +15,23 @@ import { ScrollPoseWatcher } from '@/components/AnimatedCharacter/ScrollPoseWatc
 import { PersistentCharacter } from '@/components/AnimatedCharacter/PersistentCharacter'
 
 export function HomePage() {
+  const location = useLocation()
+
+  useEffect(() => {
+    if (location.hash) {
+      const id = location.hash.replace('#', '')
+      const el = document.getElementById(id)
+      if (el) {
+        // Scroll target into view and sync ScrollTrigger
+        requestAnimationFrame(() => {
+          el.scrollIntoView({ block: 'start' })
+          ScrollTrigger.refresh()
+          ScrollTrigger.update()
+        })
+      }
+    }
+  }, [location.hash])
+
   return (
     <CharacterExpressionProvider>
       <CharacterPoseProvider>

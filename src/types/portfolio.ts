@@ -1,5 +1,18 @@
 export type ProjectVisualType = 'phone' | 'browser' | 'desktop' | 'custom'
 
+export type RoomEnvironmentType =
+  | 'fitness-lab'
+  | 'ai-studio'
+  | 'digital-workshop'
+  | 'workstation'
+  | 'terminal-bay'
+
+export interface ProjectRoomMeta {
+  roomType: RoomEnvironmentType
+  roomName: string
+  accentToken: 'accent' | 'sage' | 'haze'
+}
+
 export interface Project {
   slug: string
   number: string
@@ -19,6 +32,7 @@ export interface Project {
   architecture?: string
   challenges?: string
   lessons?: string
+  room?: ProjectRoomMeta
 }
 
 export interface Experience {

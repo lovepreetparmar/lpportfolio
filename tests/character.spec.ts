@@ -64,4 +64,47 @@ test.describe('character pose transitions', () => {
     }
     expect(consoleErrors).toEqual([])
   })
+
+  test('clicking the character opens an interactive thought bubble with authentic messages', async ({
+    page,
+    consoleErrors,
+  }) => {
+    await page.goto('/')
+    await waitForPageReady(page)
+    await scrollToSection(page, 'work')
+    await expectCharacterVisible(page)
+
+    // Click the persistent character
+    const charRoot = page.locator('.persistent-character [data-character-pose]')
+    await expect(charRoot).toBeVisible()
+    await charRoot.click()
+
+    // Verify speech bubble appears with authentic content
+    const bubble = page.locator('.persistent-character [role="dialog"]')
+    await expect(bubble).toBeVisible()
+    await expect(bubble.getByText('LOVEPREET')).toBeVisible()
+
+    await page.screenshot({ path: 'tests/screenshots/character-interaction.png', fullPage: false })
+
+    // Click next thought
+    await bubble.click()
+    await expect(bubble).toBeVisible()
+
+    // Close button dismisses dialog
+    const closeBtn = bubble.getByRole('button', { name: /close message/i })
+    await closeBtn.click()
+    await expect(bubble).not.toBeVisible()
+
+    // Scroll to contact and verify contact interaction
+    await scrollToSection(page, 'contact')
+    await charRoot.click()
+    await expect(bubble).toBeVisible()
+    await page.screenshot({ path: 'tests/screenshots/character-contact-interaction.png', fullPage: false })
+
+    const summary = consoleErrors.map((e) => `[${e.kind}] ${e.text}`).join('\n  ')
+    if (summary) {
+      console.error('Console errors captured during the test:\n  ' + summary)
+    }
+    expect(consoleErrors).toEqual([])
+  })
 })

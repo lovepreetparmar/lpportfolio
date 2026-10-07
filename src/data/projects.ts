@@ -13,6 +13,11 @@ export const projects: Project[] = [
     technologies: ['React Native', 'Expo', 'TypeScript', 'Supabase', 'AI'],
     visualType: 'phone',
     featured: true,
+    room: {
+      roomType: 'fitness-lab',
+      roomName: 'Fitness Planning Lab',
+      accentToken: 'accent',
+    },
   },
   {
     slug: 'ai-studio',
@@ -26,6 +31,11 @@ export const projects: Project[] = [
     technologies: ['React', 'TypeScript', 'Vite', 'Firebase', 'Gemini'],
     visualType: 'browser',
     featured: true,
+    room: {
+      roomType: 'ai-studio',
+      roomName: 'Creative AI Studio',
+      accentToken: 'haze',
+    },
   },
   {
     slug: 'lpsynch',
@@ -39,6 +49,11 @@ export const projects: Project[] = [
     technologies: ['React', 'TypeScript', 'Vite', 'GSAP', 'Tailwind'],
     visualType: 'browser',
     featured: true,
+    room: {
+      roomType: 'digital-workshop',
+      roomName: 'Digital Craft Workshop',
+      accentToken: 'sage',
+    },
   },
   {
     slug: 'hr-browser',
@@ -50,6 +65,11 @@ export const projects: Project[] = [
     technologies: ['Electron', 'React', 'TypeScript', 'APIs'],
     visualType: 'desktop',
     featured: true,
+    room: {
+      roomType: 'workstation',
+      roomName: 'Workstation Environment',
+      accentToken: 'haze',
+    },
   },
   {
     slug: 'rego-kernel',
@@ -61,6 +81,11 @@ export const projects: Project[] = [
     technologies: ['React', 'FastAPI', 'Python', 'SQLite', 'APIs'],
     visualType: 'custom',
     featured: true,
+    room: {
+      roomType: 'terminal-bay',
+      roomName: 'Infrastructure Bay',
+      accentToken: 'sage',
+    },
   },
 ]
 

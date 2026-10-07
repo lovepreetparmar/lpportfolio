@@ -1,5 +1,6 @@
 import { useLayoutEffect, useRef, useState } from 'react'
 import { AnimatedCharacter } from '@/components/AnimatedCharacter/AnimatedCharacter'
+import { CharacterSpeechBubble } from '@/components/AnimatedCharacter/CharacterSpeechBubble'
 import { useCharacterExpression } from '@/contexts/CharacterExpressionContext'
 import { useCharacterPose } from '@/contexts/CharacterPoseContext'
 import { heroContent } from '@/data/hero'
@@ -28,12 +29,20 @@ export function Hero() {
   const rootRef = useRef<HTMLElement>(null)
   const reducedMotion = useReducedMotion()
   const [settled, setSettled] = useState(false)
+  const [isBubbleOpen, setIsBubbleOpen] = useState(false)
+  const { setExpression, resetExpression } = useCharacterExpression()
 
   useLayoutEffect(() => {
     const root = rootRef.current
     if (!root) return undefined
     return playHeroEntrance(root, { reduced: reducedMotion, onSettled: () => setSettled(true) })
   }, [reducedMotion])
+
+  const handleHeroCharacterClick = () => {
+    setIsBubbleOpen((prev) => !prev)
+    setExpression('happy')
+    setTimeout(() => resetExpression(), 2500)
+  }
 
   return (
     <section
@@ -50,6 +59,17 @@ export function Hero() {
         </div>
 
         <div className="hero-stage relative z-[5] md:col-span-5" data-hero-stage>
+          {settled && (
+            <div className="absolute -top-14 right-8 z-20 hidden sm:block">
+              <CharacterSpeechBubble
+                pose="idle"
+                isOpen={isBubbleOpen}
+                onToggle={() => setIsBubbleOpen((prev) => !prev)}
+                onClose={() => setIsBubbleOpen(false)}
+              />
+            </div>
+          )}
+
           <div className="hero-scene" aria-hidden="true">
             <span className="hero-scene__sun" data-parallax="0.05" />
             <span className="hero-scene__hill" data-parallax="-0.02" />
@@ -59,14 +79,23 @@ export function Hero() {
             <span className="hero-ground" data-hero-ground />
           </div>
 
-          <AnimatedCharacter
-            expression={expression}
-            pose={pose}
-            interaction={settled ? 'auto' : 'resting'}
-            priority="high"
-            alt={heroContent.characterAlt}
-            className="hero-character"
-          />
+          <div
+            className="cursor-pointer select-none"
+            onClick={handleHeroCharacterClick}
+            onPointerEnter={() => setExpression('curious')}
+            onPointerLeave={resetExpression}
+            title="Click to talk with Lovepreet"
+            data-cursor="CHAT"
+          >
+            <AnimatedCharacter
+              expression={expression}
+              pose={pose}
+              interaction={settled ? 'auto' : 'resting'}
+              priority="high"
+              alt={heroContent.characterAlt}
+              className="hero-character"
+            />
+          </div>
         </div>
       </div>
     </section>
