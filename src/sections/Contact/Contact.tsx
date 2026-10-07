@@ -1,4 +1,3 @@
-import { AnimatedCharacter } from '@/components/AnimatedCharacter/AnimatedCharacter'
 import { MagneticButton } from '@/components/Magnetic/MagneticButton'
 import { EMAIL, socialLinks } from '@/data/social'
 
@@ -44,9 +43,6 @@ export function Contact() {
               </li>
             ))}
           </ul>
-        </div>
-        <div className="flex justify-center lg:col-span-5 lg:justify-end">
-          <AnimatedCharacter state="happy" followCursor expression="happy" />
         </div>
       </div>
     </section>

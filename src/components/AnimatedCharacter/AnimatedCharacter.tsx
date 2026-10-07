@@ -93,7 +93,12 @@ export function AnimatedCharacter({
       data-character-state={`${resolvedPose}/${resolvedExpression}`}
       data-character-pose={resolvedPose}
     >
-      <div className={cn(resolvedPose === 'idle' && motionEnabled && 'character-breathe')}>
+      <div
+        className={cn(
+          'character-stage',
+          resolvedPose === 'idle' && motionEnabled && 'character-breathe',
+        )}
+      >
         <div className="character-figure">
           <CharacterFrame
             layers={layers}

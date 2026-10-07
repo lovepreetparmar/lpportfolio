@@ -101,6 +101,7 @@ export function PersistentCharacter() {
         pose={pose}
         interaction="resting"
         motion="auto"
+        priority="high"
         alt=""
       />
     </div>

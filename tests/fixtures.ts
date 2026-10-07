@@ -44,6 +44,25 @@ export const test = base.extend<PortfolioFixtures>({
 
   captureCheckpoint: async ({ page }, use) => {
     const capture = async (name: string) => {
+      // Ensure visible character images are decoded before capturing the screenshot
+      const charImages = page.locator('img.character-layer')
+      const count = await charImages.count()
+      for (let i = 0; i < count; i++) {
+        const img = charImages.nth(i)
+        if (await img.isVisible().catch(() => false)) {
+          await img
+            .evaluate((el: HTMLImageElement) => {
+              if (el.decode) {
+                return Promise.race([
+                  el.decode(),
+                  new Promise((resolve) => setTimeout(resolve, 800)),
+                ]).catch(() => {})
+              }
+            })
+            .catch(() => {})
+        }
+      }
+
       await page.screenshot({
         path: `tests/screenshots/${name}.png`,
         fullPage: false,
@@ -105,6 +124,9 @@ export async function expectCharacterVisible(page: Page) {
   const locator = page.locator(PERSISTENT_CHARACTER)
   await expect(locator).toHaveCSS('opacity', '1', { timeout: 10_000 })
   await expect(locator).toHaveCSS('pointer-events', 'auto', { timeout: 10_000 })
+  const img = locator.locator('img.character-layer')
+  await expect(img).toBeVisible({ timeout: 10_000 })
+  await expect(img).toHaveJSProperty('complete', true, { timeout: 10_000 })
 }
 
 export async function expectCharacterHidden(page: Page) {
