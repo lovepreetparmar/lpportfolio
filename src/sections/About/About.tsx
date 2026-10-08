@@ -1,15 +1,8 @@
-import { AnimatedCharacter } from '@/components/AnimatedCharacter/AnimatedCharacter'
-
 export function About() {
   return (
     <section id="about" className="section-gap page-padding border-t border-ink/10 py-24 md:py-32" aria-label="About">
       <div className="grid items-center gap-16 lg:grid-cols-12">
-        <div className="lg:col-span-5">
-          <div className="flex justify-center lg:justify-start">
-            <AnimatedCharacter state="working" followCursor={false} expression="happy" />
-          </div>
-        </div>
-        <div className="lg:col-span-7">
+        <div className="lg:col-span-8">
           <p className="label-mono text-ink/50">About</p>
           <h2 className="mt-4 font-[family-name:var(--font-display)] text-4xl font-semibold text-ink md:text-5xl">
             A little about the person behind the code.

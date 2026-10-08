@@ -36,6 +36,14 @@
     }
   }
 
+  /* Stage wrapper — maintains the 100% width and height dimensional chain
+     between .character-root and .character-figure across all poses. */
+  .character-stage {
+    display: block;
+    width: 100%;
+    height: 100%;
+  }
+
   /* Breathing wrapper — kept separate from the gaze transform so the two
      never overwrite each other. Applied only while the figure idles. */
   .character-breathe {

@@ -49,4 +49,34 @@ test.describe('mobile viewport', () => {
     }
     expect(consoleErrors).toEqual([])
   })
+
+  test('mobile project detail page renders cleanly with no horizontal overflow', async ({
+    page,
+    consoleErrors,
+  }) => {
+    await page.goto('/work/fitguide')
+    await waitForPageReady(page)
+
+    // Confirm heading and content render
+    await expect(page.getByRole('heading', { name: 'FitGuide', level: 1 })).toBeVisible()
+    await expect(page.locator('.project-visual')).toBeVisible()
+
+    // Persistent character must remain hidden on mobile
+    await expect(page.locator('.persistent-character')).not.toBeVisible()
+
+    // Confirm no horizontal overflow
+    const hasHorizontalOverflow = await page.evaluate(
+      () => document.documentElement.scrollWidth > document.documentElement.clientWidth,
+    )
+    expect(hasHorizontalOverflow).toBe(false)
+
+    // Capture mobile screenshot
+    await page.screenshot({ path: 'tests/screenshots/project-detail-mobile.png', fullPage: false })
+
+    const summary = consoleErrors.map((e) => `[${e.kind}] ${e.text}`).join('\n  ')
+    if (summary) {
+      console.error('Console errors captured during the test:\n  ' + summary)
+    }
+    expect(consoleErrors).toEqual([])
+  })
 })
